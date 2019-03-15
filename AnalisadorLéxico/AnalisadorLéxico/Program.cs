@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 namespace AnalisadorLéxico
 {
     class Program
     {
+        public static dynamic variaveis;
+        public static dynamic constantes;
         static void Main(string[] args)
         {
             Methods me = new Methods();
@@ -14,37 +17,164 @@ namespace AnalisadorLéxico
             Console.Clear();
             for (int row = 0; row < lines.Count; row++)
             {
-                switch (lines[row][0])
+                string initialword = lines[row][0];
+                switch (initialword)
                 {
                     case "Program":
-                        if (lines[row][1].Contains(";"))
                         {
-                            me.ChangeTitle(lines[row][1].Trim(';'));
-                            Console.WriteLine("Titulo mudou!");
+                            int col = lines[row].Count - 1;
+                            if (!lines[row][col].Contains(";"))
+                            {
+                                me.ThrowError(row, col, ";");
+                            }
+                            else
+                            {
+                                me.ChangeTitle(lines[row][1].Trim(';'));
+                                Console.WriteLine("Titulo mudou!");
+                            }
                         }
-                        else
+                        break;
+                    case "Var":
                         {
-                            row++;
-                            int col = filelines[row].Length;
-                            Console.WriteLine($"ERRO! Ponto e virgula não incluido na linha {row} e na coluna {col}!");
-                            return;
+                            int col = lines[row].Count - 1;
+                            if (!lines[row][col].Contains(";"))
+                            {
+                                col = filelines[row].Length;
+                                me.ThrowError(row + 1, col, ";");
+                            }
+                            else
+                            {
+                                string tipo = lines[row][col].Trim(';').ToLower();
+                                if (tipo == "real")
+                                {
+                                    if (lines[row][2] != ":")
+                                    {
+                                        me.ThrowError(row + 1, col, ":");
+                                    }
+                                    variaveis = new Dictionary<string, int>();
+                                    List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
+                                    foreach (string key in nomevariaveis)
+                                    {
+                                        variaveis.Add(key, 0);
+                                    }
+                                    foreach (string key in variaveis.Keys)
+                                    {
+                                        Console.WriteLine(key);
+                                    }
+                                }
+                                if (tipo == "texto")
+                                {
+                                    if (lines[row][2] != ":")
+                                    {
+                                        me.ThrowError(row + 1, col, ":");
+                                    }
+                                    variaveis = new Dictionary<string, string>();
+                                    List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
+                                    foreach (string key in nomevariaveis)
+                                    {
+                                        variaveis.Add(key, null);
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case "Const":
+                        {
+                            int col = lines[row].Count - 1;
+                            if (!lines[row][col].Contains(";"))
+                            {
+                                col = filelines[row].Length;
+                                me.ThrowError(row + 1, col, ";");
+                            }
+                            else
+                            {
+                                constantes = new Dictionary<string, dynamic>();
+                            }
                         }
                         break;
                     case "Begin":
                         flags[0] = true;
+                        while (initialword != "End." && row < lines.Count)
+                        {
+                            initialword = lines[row][0];
+                            switch (initialword)
+                            {
+                                case string a when a.Contains("Read"):
+                                    {
+                                        string aux = null;
+                                        bool[] flag = { false, false };
+                                        foreach (char c in initialword.ToCharArray())
+                                        {
+                                            if (c == '(')
+                                            {
+                                                flag[0] = true;
+                                            }
+                                            else if (c == ')')
+                                            {
+                                                flag[1] = true;
+                                            }
+                                            else if (flag[0] && !flag[1])
+                                            {
+                                                aux += c;
+                                            }
+                                        }
+                                        if (flag[0] && flag[1])
+                                        {
+                                            string test = Console.ReadLine();
+                                            variaveis[aux] = Convert.ToInt32(test);
+                                        }
+                                        else
+                                        {
+                                            me.ThrowError(flag, "Read");
+                                        }
+                                    }
+                                    break;
+                                case string b when b.Contains("Write"):
+                                    {
+                                        string aux = null;
+                                        bool[] flag = { false, false };
+                                        foreach (char c in initialword.ToCharArray())
+                                        {
+                                            if (c == '(')
+                                            {
+                                                flag[0] = true;
+                                            }
+                                            else if (c == ')')
+                                            {
+                                                flag[1] = true;
+                                            }
+                                            else if (flag[0] && !flag[1])
+                                            {
+                                                aux += c;
+                                            }
+                                        }
+                                        if (flag[0] && flag[1])
+                                        {
+                                            Console.WriteLine(variaveis[aux]);
+                                        }
+                                        else
+                                        {
+                                            me.ThrowError(flag, "Write");
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            row++;
+                        }
+                        if (initialword == "End.")
+                        {
+                            flags[1] = true;
+                        }
                         break;
-                    case "End.":
-                        flags[1] = true;
-                        break;
-                    case string a when a.Contains("Program!"):
+                    case string a when a.Contains("Program") || a.Contains("Var") || a.Contains("Const"):
                         char[] charArr = a.ToCharArray();
                         for (int col = 0; col < charArr.Length; col++)
                         {
                             if (!Char.IsLetter(charArr[col]))
                             {
-                                row++;
-                                col++;
-                                Console.WriteLine($"ERRO! Caracter não suportado na linha {row} e na coluna {col}!");
+                                me.ThrowError(row + 1, col + 1, "char");
                                 return;
                             }
                         }
@@ -55,21 +185,7 @@ namespace AnalisadorLéxico
             }
             if (!flags[0] || !flags[1])
             {
-                if (flags[0])
-                {
-                    Console.WriteLine("ERRO! Falta o End. do programa!");
-                    return;
-                }
-                else if (flags[1])
-                {
-                    Console.WriteLine("ERRO! Falta o Begin do programa!");
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("ERRO! Falta o Begin e o End. do programa!");
-                    return;
-                }
+                me.ThrowError(flags, "BeginEnd");
             }
         }
     }

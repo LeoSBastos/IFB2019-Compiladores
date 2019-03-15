@@ -27,5 +27,47 @@ namespace AnalisadorLéxico
         {
             Console.Title = title;
         }
+        public void ThrowError(int row, int col, string caso)
+        {
+            switch (caso)
+            {
+                case ";":
+                    Console.WriteLine($"ERRO! Ponto e virgula não incluido na linha {row} e na coluna {col}!");
+                    Environment.Exit(1);
+                    break;
+                case "char":
+                    Console.WriteLine($"ERRO! Caracter não suportado na linha {row} e na coluna {col}!");
+                    Environment.Exit(1);
+                    break;
+            }
+        }
+
+        public void ThrowError(bool[] flags, string caso)
+        {
+            switch (caso)
+            {
+                case "Read":
+                    break;
+                case "Write":
+                    break;
+                case "BeginEnd":
+                    if (flags[0])
+                    {
+                        Console.WriteLine("ERRO! Falta o End. do programa!");
+                        Environment.Exit(1);
+                    }
+                    else if (flags[1])
+                    {
+                        Console.WriteLine("ERRO! Falta o Begin do programa!");
+                        Environment.Exit(1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERRO! Falta o Begin e o End. do programa!");
+                        Environment.Exit(1);
+                    }
+                    break;
+            }
+        }
     }
 }
