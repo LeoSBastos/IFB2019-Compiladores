@@ -11,7 +11,20 @@ namespace AnalisadorLéxico
         {
             string workdir = Directory.GetCurrentDirectory();
             string path = Directory.GetParent(workdir).Parent.Parent.FullName + "\\files\\" + filename;
-            string[] lines = File.ReadAllLines(@path);
+            dynamic lines;
+            try
+            {
+                lines = File.ReadAllLines(@path);
+            }
+            catch (Exception e)
+            {
+                lines = null;
+            }
+            if (lines == null)
+            {
+                Console.WriteLine("Arquivo não existe ou fora da pasta files");
+                Environment.Exit(1);
+            }
             return lines;
         }
         public List<List<string>> LinesToWords(string[] lines)
@@ -19,7 +32,7 @@ namespace AnalisadorLéxico
             List<List<string>> words = new List<List<string>>();
             foreach (string line in lines)
             {
-                words.Add(line.Trim(new char[] { ' ', '\t' }).Split(" ").ToList<string>());
+                words.Add(line.Trim(new char[] { ' ', '\t' }).Replace("*", " * ").Replace("/", " / ").Split(" ").ToList<string>());
             }
             return words;
         }
@@ -41,6 +54,10 @@ namespace AnalisadorLéxico
                     break;
                 case "Double":
                     Console.WriteLine($"ERRO! Só inteiro é suportado como numeral, existe um ponto na linha {row} e na coluna {col}!");
+                    Environment.Exit(1);
+                    break;
+                case "Variavel":
+                    Console.WriteLine($"ERRO! Este caracter na linha {row} e na coluna {col} não é um metodo nem uma variavel!");
                     Environment.Exit(1);
                     break;
             }

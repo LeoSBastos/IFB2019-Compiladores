@@ -7,6 +7,8 @@ namespace AnalisadorLéxico
     {
         public static dynamic variaveis;
         public static dynamic constantes;
+        public static int col;
+        public static char[] charArr;
         static void Main(string[] args)
         {
             Methods me = new Methods();
@@ -21,114 +23,103 @@ namespace AnalisadorLéxico
                 switch (initialword)
                 {
                     case "Program":
+                        col = lines[row].Count - 1;
+                        if (!lines[row][col].Contains(";"))
                         {
-                            int col = lines[row].Count - 1;
-                            if (!lines[row][col].Contains(";"))
-                            {
-                                col = filelines[row].Length;
-                                me.ThrowError(row, col, ";");
-                            }
-                            else
-                            {
-                                me.ChangeTitle(lines[row][1].Trim(';'));
-                                Console.WriteLine("Titulo mudou!");
-                            }
+                            col = filelines[row].Length;
+                            me.ThrowError(row, col, ";");
+                        }
+                        else
+                        {
+                            me.ChangeTitle(lines[row][1].Trim(';'));
                         }
                         break;
                     case "Var":
+                        col = lines[row].Count - 1;
+                        if (!lines[row][col].Contains(";"))
                         {
-                            int col = lines[row].Count - 1;
-                            if (!lines[row][col].Contains(";"))
+                            col = filelines[row].Length;
+                            me.ThrowError(row + 1, col, ";");
+                        }
+                        else
+                        {
+                            string tipo = lines[row][col].Trim(';').ToLower();
+                            if (tipo == "real")
                             {
-                                col = filelines[row].Length;
-                                me.ThrowError(row + 1, col, ";");
-                            }
-                            else
-                            {
-                                string tipo = lines[row][col].Trim(';').ToLower();
-                                if (tipo == "real")
+                                if (lines[row][2] != ":")
                                 {
-                                    if (lines[row][2] != ":")
-                                    {
-                                        me.ThrowError(row + 1, col, ":");
-                                    }
-                                    variaveis = new Dictionary<string, int>();
-                                    List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
-                                    foreach (string key in nomevariaveis)
-                                    {
-                                        variaveis.Add(key, 0);
-                                    }
-                                    foreach (string key in variaveis.Keys)
-                                    {
-                                        Console.WriteLine(key);
-                                    }
+                                    me.ThrowError(row + 1, col, ":");
                                 }
-                                if (tipo == "texto")
+                                variaveis = new Dictionary<string, int>();
+                                List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
+                                foreach (string key in nomevariaveis)
                                 {
-                                    if (lines[row][2] != ":")
-                                    {
-                                        me.ThrowError(row + 1, col, ":");
-                                    }
-                                    variaveis = new Dictionary<string, string>();
-                                    List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
-                                    foreach (string key in nomevariaveis)
-                                    {
-                                        variaveis.Add(key, null);
-                                    }
+                                    variaveis.Add(key, 0);
+                                }
+                            }
+                            if (tipo == "texto")
+                            {
+                                if (lines[row][2] != ":")
+                                {
+                                    me.ThrowError(row + 1, col, ":");
+                                }
+                                variaveis = new Dictionary<string, string>();
+                                List<string> nomevariaveis = lines[row][1].Replace(',', ' ').Split(" ").ToList<string>();
+                                foreach (string key in nomevariaveis)
+                                {
+                                    variaveis.Add(key, null);
                                 }
                             }
                         }
                         break;
                     case "Const":
+                        col = lines[row].Count - 1;
+                        if (!lines[row][col].Contains(";"))
                         {
-                            int col = lines[row].Count - 1;
-                            if (!lines[row][col].Contains(";"))
+                            col = filelines[row].Length;
+                            me.ThrowError(row + 1, col, ";");
+                        }
+                        else
+                        {
+                            constantes = new Dictionary<string, dynamic>();
+                            for (int i = 0; i < lines[row].Count; i++)
                             {
-                                col = filelines[row].Length;
-                                me.ThrowError(row + 1, col, ";");
-                            }
-                            else
-                            {
-                                constantes = new Dictionary<string, dynamic>();
-                                for (int i = 0; i < lines[row].Count; i++)
+                                if (lines[row][i].Contains(";"))
                                 {
-                                    if (lines[row][i].Contains(";"))
+                                    string rawvalue = lines[row][i].Trim(';');
+                                    if (lines[row][i - 1] == "=")
                                     {
-                                        string rawvalue = lines[row][i].Trim(';');
-                                        if (lines[row][i - 1] == "=")
+                                        if (!lines[row][i - 2].Contains(";") && lines[row][i - 2] != "Const")
                                         {
-                                            if (!lines[row][i - 2].Contains(";") && lines[row][i - 2] != "Const")
+                                            bool isInt = int.TryParse(rawvalue, out int value);
+                                            bool isDouble = double.TryParse(rawvalue, out double result);
+                                            if (isInt)
                                             {
-                                                bool isInt = int.TryParse(rawvalue, out int value);
-                                                bool isDouble = double.TryParse(rawvalue, out double result);
-                                                if (isInt)
+                                                constantes.Add(lines[row][i - 2].ToLower(), value);
+                                            }
+                                            else if (isDouble)
+                                            {
+                                                charArr = filelines[row].ToCharArray();
+                                                for (col = 0; col < charArr.Length; col++)
                                                 {
-                                                    constantes.Add(lines[row][i - 2], value);
-                                                }
-                                                else if (isDouble)
-                                                {
-                                                    char[] charArr = filelines[row].ToCharArray();
-                                                    for (col = 0; col < charArr.Length; col++)
+                                                    if (charArr[col] == '.')
                                                     {
-                                                        if (charArr[col] == '.')
-                                                        {
-                                                            me.ThrowError(row + 1, col, "Double");
-                                                        }
+                                                        me.ThrowError(row + 1, col, "Double");
                                                     }
+                                                }
 
-                                                }
-                                                else
-                                                {
-                                                    constantes.Add(lines[row][i - 2], rawvalue);
-                                                }
+                                            }
+                                            else
+                                            {
+                                                constantes.Add(lines[row][i - 2].ToLower(), rawvalue);
                                             }
                                         }
                                     }
                                 }
-                                foreach (string key in constantes.Keys)
-                                {
-                                    Console.WriteLine(constantes[key]);
-                                }
+                            }
+                            foreach (string key in constantes.Keys)
+                            {
+                                Console.WriteLine(key);
                             }
                         }
                         break;
@@ -199,9 +190,120 @@ namespace AnalisadorLéxico
                                     }
                                     break;
                                 default:
+                                    List<string> keys = new List<string>(variaveis.Keys);
+                                    List<string> keys2 = new List<string>(constantes.Keys);
+                                    if (keys.Contains(initialword, StringComparer.OrdinalIgnoreCase))
+                                    {
+                                        for (int i = 0; i < lines[row].Count; i++)
+                                        {
+                                            if (lines[row][i].Contains(":="))
+                                            {
+                                                string keytosave = initialword.ToLower();
+                                                dynamic totalvalue;
+                                                dynamic temp = null;
+                                                dynamic temp2 = null;
+                                                for (; i < lines[row].Count; i++)
+                                                {
+                                                    switch (lines[row][i])
+                                                    {
+                                                        case "*":
+                                                            if (keys.Contains(lines[row][i - 1]))
+                                                            {
+                                                                temp = variaveis[lines[row][i - 1].ToLower()];
+                                                            }
+                                                            else if (keys2.Contains(lines[row][i - 1]))
+                                                            {
+                                                                temp = constantes[lines[row][i - 1].ToLower()];
+                                                            }
+                                                            else
+                                                            {
+                                                                charArr = filelines[row].ToCharArray();
+                                                                for (col = 0; col < charArr.Length; col++)
+                                                                {
+                                                                    if (charArr[col] == lines[row][i - 1].ToCharArray()[0])
+                                                                    {
+                                                                        me.ThrowError(row + 1, col, "Variavel2");
+                                                                    }
+                                                                }
+                                                            }
+                                                            if (keys.Contains(lines[row][i + 1]))
+                                                            {
+                                                                temp2 = variaveis[lines[row][i + 1].ToLower()];
+                                                            }
+                                                            else if (keys2.Contains(lines[row][i + 1]))
+                                                            {
+                                                                temp2 = constantes[lines[row][i + 1].ToLower()];
+                                                            }
+                                                            else
+                                                            {
+                                                                charArr = filelines[row].ToCharArray();
+                                                                for (col = 0; col < charArr.Length; col++)
+                                                                {
+                                                                    if (charArr[col] == lines[row][i + 1].ToCharArray()[0])
+                                                                    {
+                                                                        me.ThrowError(row + 1, col, "Variavel2");
+                                                                    }
+                                                                }
+                                                            }
+                                                            totalvalue = temp * temp2;
+                                                            variaveis.Add("temp", totalvalue);
+                                                            break;
+                                                        case "/":
+                                                            if (keys.Contains(lines[row][i - 1]))
+                                                            {
+                                                                temp = variaveis[lines[row][i - 1].ToLower()];
+                                                            }
+                                                            else if (keys2.Contains(lines[row][i - 1]))
+                                                            {
+                                                                temp = constantes[lines[row][i - 1].ToLower()];
+                                                            }
+                                                            else
+                                                            {
+                                                                charArr = filelines[row].ToCharArray();
+                                                                for (col = 0; col < charArr.Length; col++)
+                                                                {
+                                                                    if (charArr[col] == lines[row][i - 1].ToCharArray()[0])
+                                                                    {
+                                                                        me.ThrowError(row + 1, col, "Variavel2");
+                                                                    }
+                                                                }
+                                                            }
+                                                            if (keys.Contains(lines[row][i + 1]))
+                                                            {
+                                                                temp2 = variaveis[lines[row][i + 1].ToLower()];
+                                                            }
+                                                            else if (keys2.Contains(lines[row][i + 1]))
+                                                            {
+                                                                temp2 = constantes[lines[row][i + 1].ToLower()];
+                                                            }
+                                                            else
+                                                            {
+                                                                charArr = filelines[row].ToCharArray();
+                                                                for (col = 0; col < charArr.Length; col++)
+                                                                {
+                                                                    if (charArr[col] == lines[row][i + 1].ToCharArray()[0])
+                                                                    {
+                                                                        me.ThrowError(row + 1, col, "Variavel2");
+                                                                    }
+                                                                }
+                                                            }
+                                                            totalvalue = temp * temp2;
+                                                            variaveis.Add("temp", totalvalue);
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        me.ThrowError(row, 1, "Variavel");
+                                    }
                                     break;
                             }
+
                             row++;
+
                         }
                         if (initialword == "End.")
                         {
@@ -209,14 +311,12 @@ namespace AnalisadorLéxico
                         }
                         break;
                     case string a when a.Contains("Program") || a.Contains("Var") || a.Contains("Const"):
+                        charArr = a.ToCharArray();
+                        for (int col = 0; col < charArr.Length; col++)
                         {
-                            char[] charArr = a.ToCharArray();
-                            for (int col = 0; col < charArr.Length; col++)
+                            if (!Char.IsLetter(charArr[col]))
                             {
-                                if (!Char.IsLetter(charArr[col]))
-                                {
-                                    me.ThrowError(row + 1, col + 1, "char");
-                                }
+                                me.ThrowError(row + 1, col + 1, "char");
                             }
                         }
                         break;
