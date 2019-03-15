@@ -39,6 +39,10 @@ namespace AnalisadorLéxico
                     Console.WriteLine($"ERRO! Caracter não suportado na linha {row} e na coluna {col}!");
                     Environment.Exit(1);
                     break;
+                case "Double":
+                    Console.WriteLine($"ERRO! Só inteiro é suportado como numeral, existe um ponto na linha {row} e na coluna {col}!");
+                    Environment.Exit(1);
+                    break;
             }
         }
 
@@ -46,9 +50,22 @@ namespace AnalisadorLéxico
         {
             switch (caso)
             {
-                case "Read":
-                    break;
-                case "Write":
+                case "ReadWrite":
+                    if (flags[0])
+                    {
+                        Console.WriteLine("ERRO! Falta o ) do programa!");
+                        Environment.Exit(1);
+                    }
+                    else if (flags[1])
+                    {
+                        Console.WriteLine("ERRO! Falta o ( do programa!");
+                        Environment.Exit(1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERRO! Falta o ( e o ) do método!");
+                        Environment.Exit(1);
+                    }
                     break;
                 case "BeginEnd":
                     if (flags[0])
