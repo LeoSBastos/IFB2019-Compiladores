@@ -1,0 +1,11 @@
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\bin\Debug\netcoreapp2.1\AnalisadorLéxico.deps.json
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\bin\Debug\netcoreapp2.1\AnalisadorLéxico.runtimeconfig.json
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\bin\Debug\netcoreapp2.1\AnalisadorLéxico.runtimeconfig.dev.json
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\bin\Debug\netcoreapp2.1\AnalisadorLéxico.dll
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\bin\Debug\netcoreapp2.1\AnalisadorLéxico.pdb
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.csprojAssemblyReference.cache
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.csproj.CoreCompileInputs.cache
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.AssemblyInfoInputs.cache
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.AssemblyInfo.cs
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.dll
+D:\Documents\Gits\IFB2019-Compiladores\AnalisadorLéxico\AnalisadorLéxico\obj\Debug\netcoreapp2.1\AnalisadorLéxico.pdb
