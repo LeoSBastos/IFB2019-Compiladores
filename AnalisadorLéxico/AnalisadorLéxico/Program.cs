@@ -33,6 +33,7 @@ namespace AnalisadorLéxico
                     }
                 }
             }
+            Console.WriteLine("O programa é o mesmo!");
         }
     }
 }
