@@ -27,40 +27,11 @@ namespace AnalisadorLéxico
             }
             return lines;
         }
-        public List<List<string>> LinesToWords(string[] lines)
+        public void ThrowError(int row, int col)
         {
-            List<List<string>> words = new List<List<string>>();
-            foreach (string line in lines)
-            {
-                words.Add(line.Trim(new char[] { ' ', '\t' }).Replace("*", " * ").Replace("/", " / ").Split(" ").ToList<string>());
-            }
-            return words;
-        }
-        public void ChangeTitle(string title)
-        {
-            Console.Title = title;
-        }
-        public void ThrowError(int row, int col, string caso)
-        {
-            switch (caso)
-            {
-                case ";":
-                    Console.WriteLine($"ERRO! Ponto e virgula não incluido na linha {row} e na coluna {col}!");
-                    Environment.Exit(1);
-                    break;
-                case "char":
-                    Console.WriteLine($"ERRO! Caracter não suportado na linha {row} e na coluna {col}!");
-                    Environment.Exit(1);
-                    break;
-                case "Double":
-                    Console.WriteLine($"ERRO! Só inteiro é suportado como numeral, existe um ponto na linha {row} e na coluna {col}!");
-                    Environment.Exit(1);
-                    break;
-                case "Variavel":
-                    Console.WriteLine($"ERRO! Este caracter na linha {row} e na coluna {col} não é um metodo nem uma variavel!");
-                    Environment.Exit(1);
-                    break;
-            }
+            Console.WriteLine($"ERRO! Ponto e virgula não incluido na linha {row} e na coluna {col}!");
+            Environment.Exit(1);
+            break;
         }
 
         public void ThrowError(bool[] flags, string caso)
