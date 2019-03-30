@@ -54,7 +54,7 @@ public class AnalisadorLexico {
 						}
 					}
 					try {
-						erro(i, j+1);
+						erro(i+1, j+1);
 					} catch (AnalisadorLexicoException e) {
 						e.printStackTrace();
 					}
