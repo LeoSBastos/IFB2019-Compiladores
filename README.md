@@ -1,6 +1,6 @@
 # IFB2019-Compiladores
 
-Trabalho realizado para matéria de Compiladores do 7º semestre do Instituto Federal de Brasília.
+Trabalho realizado para matéria de Compiladores do 7º semestre do curso de Ciência da Computação do Instituto Federal de Brasília - Campus Taguatinga.
 
 
 ## Definições da Linguagem
