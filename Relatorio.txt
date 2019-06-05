@@ -1,0 +1,4 @@
+Linguagem de Programção Utilizada: Java
+Frameworks Utilizadas: JFlex e Java Cup
+Status do Projeto: Analisador Léxico em andamento seguindo as especificações do projeto.
+Dificuldades: Dificuldade de apredizagem do JFlex e do arquivo .lex
