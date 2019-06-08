@@ -352,12 +352,12 @@ public class AnalisadorSintaticontes extends java_cup.runtime.lr_parser {
 
 
     public void report_error(String message, Object info){
-            System.out.println("Warning - " + message + " - Token - " + Sym.terminalNames[((Symbol) info).sym] +"na linha "+((Symbol) info).left+" e na coluna"+((Symbol)info).right);
+            System.out.println("Warning - " + message + " - Token - " + Sym.terminalNames[((Symbol) info).sym] +" na linha "+((Symbol) info).left+" e na coluna "+((Symbol)info).right);
         }
 
 
     public void report_fatal_error(String message, Object info)  {
-            System.out.println("Error - " + message + " - Token - " + Sym.terminalNames[((Symbol) info).sym] +"na linha "+((Symbol) info).left+" e na coluna"+((Symbol)info).right);
+            System.out.println("Error - " + message + " - Token - " + Sym.terminalNames[((Symbol) info).sym] +" na linha "+((Symbol) info).left+" e na coluna "+((Symbol)info).right);
             System.exit(-1);
     }
 
