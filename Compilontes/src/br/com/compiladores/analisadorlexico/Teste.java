@@ -19,7 +19,7 @@ public class Teste {
         AnalisadorLexicontes lexico = new AnalisadorLexicontes(new FileReader(file));
         Symbol token;
 
-        while ((token = lexico.next_token()) != null) {
+        while ((token = lexico.next_token()).sym != 0) {
             System.out.println("<" + Sym.terminalNames[token.sym] + ", " + token.value + "> (" + token.left + " - " + token.right + ")");
         }
     }
