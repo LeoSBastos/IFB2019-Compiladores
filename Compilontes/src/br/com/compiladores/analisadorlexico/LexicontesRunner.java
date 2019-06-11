@@ -1,6 +1,5 @@
 package br.com.compiladores.analisadorlexico;
 
-import br.com.compiladores.analisadorsintatico.Sym;
 import java_cup.runtime.Symbol;
 
 import java.io.FileReader;
