@@ -19,7 +19,7 @@ public class LexicontesRunner {
         List<Symbol> list = new ArrayList<>();
         AnalisadorLexicontes lexico = new AnalisadorLexicontes(new FileReader(file));
         Symbol token;
-        while((token = lexico.next_token()) != null) {
+        while((token = lexico.next_token()).sym != 0) {
         	list.add(token);
         }
         return list;
